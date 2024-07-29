@@ -8,9 +8,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.conf import settings
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-# import weasyprint
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from xhtml2pdf import pisa
 
 def order_create(request):
     cart = Cart(request)
@@ -41,29 +41,21 @@ def admin_order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, 'admin/orders/order/detail.html', {'order': order})
 
-# @staff_member_required
-# def admin_order_pdf(request, order_id):
-#     order = get_object_or_404(Order, id=order_id)
-#     html = render_to_string('orders/order/pdf.html', {'order': order})
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = f'filename=order_{order.id}.pdf'
-#     weasyprint.HTML(string=html).write_pdf(
-#         response,
-#         stylesheets=[weasyprint.CSS(settings.STATIC_ROOT / 'css/pdf.css')]
-#     )
-#     return response
-
+@staff_member_required
 def admin_order_pdf(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+    html = render_to_string('orders/order/pdf.html', {'order': order})
+    
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'filename=order_{order.id}.pdf'
+    
+    # Check if the user wants to download or preview
+    if request.GET.get('download'):
+        response['Content-Disposition'] = f'attachment; filename="order_{order.id}.pdf"'
+    else:
+        response['Content-Disposition'] = f'inline; filename="order_{order.id}.pdf"'
 
-    p = canvas.Canvas(response, pagesize=A4)
-    p.drawString(100, 750, f"Order ID: {order.id}")
-    p.drawString(100, 735, f"Name: {order.first_name} {order.last_name}")
-    p.drawString(100, 720, f"Email: {order.email}")
-    # Add more details as required
+    pisa_status = pisa.CreatePDF(html, dest=response)
 
-    p.showPage()
-    p.save()
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response

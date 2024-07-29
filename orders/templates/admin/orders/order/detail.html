@@ -1,5 +1,5 @@
 {% extends 'shop/base.html' %}
-{% load static %} 
+{% load static %}
 
 {% block title %}
     Order {{ order.id }} {{ block.super }}
@@ -7,15 +7,17 @@
 
 {% block breadcrumbs %}
     <div class="breadcrumbs">
-        <a href="{% url "admin:index" %}">Home</a> &saquo;
-        <a href="{% url "admin:orders_order_changelist" %}">Orders</a> &saquo;
-        <a href="{% url "admin:ordres_order_change" order.id %}">Order {{ order.id }}</a>
+        <a href="{% url 'admin:index' %}">Home</a> &saquo;
+        <a href="{% url 'admin:orders_order_changelist' %}">Orders</a> &saquo;
+        <a href="{% url 'admin:orders_order_change' order.id %}">Order {{ order.id }}</a>
         &saquo; Detail
     </div>
 {% endblock %}
+
+{% block content %}
 <div class="module">
     <h1>Order {{ order.id }}</h1>
-    <ul class="object-toools">
+    <ul class="object-tools">
         <li>
             <a href="#" onclick="window.print();">
                 Print order
@@ -75,17 +77,18 @@
         </thead>
         <tbody>
             {% for item in order.items.all %}
-                <tr class="row{% cycle "1" "2" %}">
+                <tr class="row{% cycle '1' '2' %}">
                     <td>{{ item.product.name }}</td>
                     <td class="num">${{ item.price }}</td>
                     <td class="num">{{ item.quantity }}</td>
                     <td class="num">${{ item.get_cost }}</td>
                 </tr>
-                {% endfor %}
-                <tr class="total">
-                    <td colspan="4">Total</td>
-                    <td class="num">${{ order.get_total_cost }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+            <tr class="total">
+                <td colspan="3">Total</td>
+                <td class="num">${{ order.get_total_cost }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
