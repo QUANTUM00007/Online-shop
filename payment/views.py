@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-import stripe  # type: ignore
+import stripe
 from django.conf import settings
 from orders.models import Order 
 from decimal import Decimal

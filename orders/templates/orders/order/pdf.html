@@ -3,46 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice {{ order.id }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            margin: 40px;
-        }
-        h1 {
-            font-size: 24px;
-        }
-        h3 {
-            font-size: 18px;
-        }
-        .secondary {
-            color: #666;
-        }
-        .total, .total td {
-            font-weight: bold;
-        }
-        .num {
-            text-align: right;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .paid {
-            color: green;
-        }
-        .pending {
-            color: red;
-        }
-    </style>
 </head>
 <body>
     <h1>My shop</h1>
@@ -78,9 +38,27 @@
                     <td class="num">${{ item.get_cost }}</td>
                 </tr>
             {% endfor %}
+
+            {% if order.coupon %}
+            <tr class="subtotal">
+                <td colspan="3">Subtotal</td>
+                <td class="num">
+                    ${{ order.get_total_cost_before_discount|floatformat:2 }}
+                </td>
+            </tr>
+            <tr colspan="3">
+                <td colspan="3">
+                    "{{ order.coupon.code }}" coupon 
+                    ({{ order.discount }}% off)
+                </td>
+                <td class="num neg">
+                    - ${{ order.get_discount|floatformat:2 }}
+                </td>
+            </tr>
+            {% endif %}
             <tr class="total">
                 <td colspan="3">Total</td>
-                <td class="num">${{ order.get_total_cost }}</td>
+                <td class="num">${{ order.get_total_cost|floatformat:2 }}</td>
             </tr>
         </tbody>
     </table>

@@ -147,3 +147,8 @@ STRIPE_SECRET_KEY = 'sk_test_51Ph2L7Rx7GpgaRAJRMHsvnYU5DNoa1bNLlHLtsnyjpiAN9tCES
 STRIPE_API_VERSION = '2022-08-01'
 
 STRIPE_WEBHOOK_SECRET = 'whsec_2eb7d0e6b445570a0db00aa6a39ff0b3fc154f92fae1f5ebc4fcca2e60eca2cd'
+
+# redis settings
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
