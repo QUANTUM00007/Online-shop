@@ -40,7 +40,7 @@
                 {{ items }} items, ${{ total }}
               {% endblocktrans %}
             </a>
-          {% elif not order %}
+          {% else %}
             {% trans "Your cart is empty." %}
           {% endif %}
         {% endwith %}
